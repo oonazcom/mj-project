@@ -1,0 +1,165 @@
+/* style.css */
+
+/* 폰트나 전체 페이지 기본 설정 */
+body {
+  margin: 0;
+  background: #dfe6e9;
+  font-family: sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* 게임보이 본체 스타일 */
+.console {
+  width: 100%;
+  max-width: 420px;
+  height: 100vh;
+  max-height: 880px;
+  padding: 8px;
+  background: #b2bec3;
+  border-radius: 20px;
+  box-shadow: 0 0 0 4px #636e72 inset;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* === ▼▼▼ 레이아웃 수정 부분 ▼▼▼ === */
+
+/* 게임 화면 스타일 */
+.screen {
+  height: 300px; /* 고정 높이 지정 */
+  flex-shrink: 0; /* 찌그러짐 방지 */
+  background: #2d3436;
+  border-radius: 12px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 하단 컨트롤 영역 컨테이너 */
+.controls-container {
+  flex-grow: 1; /* 남는 공간 모두 차지 */
+  min-height: 0; /* flex 버그 방지 트릭 */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 베팅 목록 */
+.list {
+  flex-grow: 1; /* 부모 안에서 남는 공간 모두 차지 */
+  min-height: 0;
+  background: #dfe6e9;
+  border-radius: 12px;
+  padding: 6px;
+  overflow-y: auto;
+}
+
+/* === ▲▲▲ 레이아웃 수정 끝 ▲▲▲ === */
+
+/* === 전투화면 스타일 === */
+.hud {
+  display: flex;
+  gap: 6px;
+  padding: 8px;
+  font-size: 10px;
+}
+.hp {
+  flex: 1;
+  background: #111;
+  border-radius: 6px;
+  overflow: hidden;
+  height: 10px;
+  margin-top: 4px;
+}
+.hp > i {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: #00e676;
+  transition: width 0.4s ease;
+}
+.arena {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 90px;
+  position: relative;
+}
+.vs {
+  font-family: 'Press Start 2P', sans-serif;
+  margin: 0 6px;
+  font-size: 12px;
+  opacity: 0.8;
+}
+/* 캐릭터의 기본 위치와 애니메이션 효과 담당 */
+.character {
+  transform-origin: bottom;
+  /* 기본 '숨쉬기' 애니메이션 */
+  animation: bobbing 2s ease-in-out infinite;
+}
+
+/* 실제 캐릭터 이미지를 담당하는 스프라이트 스타일 */
+.character.sprite {
+  width: 24px;
+  height: 32px;
+  background-image: url('/smp_sp.png');
+  background-size: 1024px 832px;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  /* 기본 '서 있는 동작' 애니메이션 */
+  animation-name: idle;
+  animation-duration: 1s;
+  animation-timing-function: steps(2);
+  animation-iteration-count: infinite;
+}
+
+/* 방향 및 확대/축소 담당 */
+.character.left {
+  transform: scale(-2.5, 2.5); /* 왼쪽 보기 (좌우반전 + 2.5배 확대) */
+}
+.character.right {
+  transform: scale(2.5, 2.5); /* 오른쪽 보기 (2.5배 확대) */
+}
+
+/* 애니메이션 키프레임 정의 */
+@keyframes idle {
+  from { background-position-x: 0px; }
+  to { background-position-x: -48px; } /* 24px * 2프레임 */
+}
+
+@keyframes bobbing {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0); }
+}
+
+/* === 하단 컨트롤 영역 내부 스타일 === */
+.match { background: var(--card); border: 2px solid var(--card-b); border-radius: 10px; padding: 6px; margin-bottom: 6px; display: flex; flex-direction: column; gap: 4px; font-size: 9px; line-height: 1.25; }
+.header { display: flex; align-items: center; justify-content: space-between; }
+.leftRow, .rightRow { display: flex; align-items: center; gap: 6px; }
+.badge { padding: 2px 6px; border-radius: 6px; font-size: 9px; white-space: nowrap; display: inline-flex; align-items: center; }
+.OPEN { background: #2ecc71; color: #fff; } 
+.CLOSED { background: #e67e22; color: #fff; } 
+.SETTLED { background: #27ae60; color: #fff; }
+.muted { color: #636e72; }
+.bet-container { display: flex; gap: 6px; }
+.bet-box { flex: 1; background: #fff; border: 2px solid #ccc; border-radius: 8px; padding: 6px 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; min-width: 0; }
+.bet-box.active { background-color: #fffbe6; border-color: #f1c40f; }
+.tname { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pill { background: var(--pill); padding: 3px 6px; border-radius: 6px; user-select: none; transition: opacity 0.2s; font-variant-numeric: tabular-nums; }
+.pill.disabled { opacity: 0.4; pointer-events: none; }
+.controls { display: flex; gap: 6px; padding: 0 6px; }
+.amounts { display: flex; gap: 6px; flex-wrap: wrap; }
+.abtn { background: #ffe082; border: 2px solid #ffca28; border-radius: 8px; padding: 8px 10px; font-size: 11px; cursor: pointer; }
+.abtn.active { outline: 2px solid #ff8f00; }
+.cta { margin-top: 4px; display: flex; gap: 6px; padding: 0 6px; }
+.btn { background: var(--btn); color: #fff; border: none; padding: 10px 12px; border-radius: 8px; font-size: 11px; cursor: pointer; box-shadow: 0 2px var(--btn-shadow); }
+.btn:active { transform: translateY(2px); box-shadow: none; }
+.btn[disabled] { opacity: 0.55; filter: grayscale(0.1); cursor: not-allowed; box-shadow: none; }
+#summary { font-size: 11px; opacity: .7; display: flex; align-items: center; }
