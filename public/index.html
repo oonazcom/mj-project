@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MJ Project Alpha</title>
+
+  <link rel="stylesheet" href="style.css?v=1.1">
+</head>
+<body>
+  <div class="console">
+    <div class="screen">
+        <div class="hud">
+        <div style="flex: 1">
+          <div>A-CHARACTER HP</div>
+          <div class="hp"><i id="hpA"></i></div>
+        </div>
+        <div style="width: 60px; text-align: center">
+          RND <span id="round">1</span>
+        </div>
+        <div style="flex: 1">
+          <div>B-CHARACTER HP</div>
+          <div class="hp"><i id="hpB"></i></div>
+        </div>
+      </div>
+      <div class="arena">
+          <div id="charA" class="character sprite right"></div>
+          <div class="vs">VS</div>
+          <div id="charB" class="character sprite left"></div>
+        </div>
+      </div>
+    <div class="controls">
+        <div class="controls-container">
+  <section class="list" id="matchList"></section>
+  <section class="controls" aria-label="bet controls">
+    <div class="amounts" id="amountButtons" aria-label="amount">
+      <button class="abtn" data-amt="1000">₩1,000</button>
+      <button class="abtn" data-amt="5000">₩5,000</button>
+      <button class="abtn" data-amt="10000">₩10,000</button>
+      <button class="abtn" data-amt="50000">₩50,000</button>
+    </div>
+  </section>
+  <section class="cta">
+    <button class="btn" id="betBtn" disabled>베팅하기</button>
+    <div id="summary">선택 없음</div>
+  </section>
+</div>
+      </div>
+  </div>
+<script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-functions-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-auth-compat.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
