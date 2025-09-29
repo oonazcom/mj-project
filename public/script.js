@@ -201,13 +201,20 @@ listEl.addEventListener("click", (e) => {
       // ▲▲▲ 여기까지 추가 ▲▲▲
         // ▼▼▼ 바로 여기에 이 코드를 추가! ▼▼▼
       // '베팅하기' 버튼을 눌렀을 때
-      betBtn.addEventListener("click", () => {
-        // 1. 베팅할 경기가 없거나, 금액이 선택되지 않았으면 막기
+         betBtn.addEventListener("click", () => {
         if (selected.bets.length === 0 || !selected.amount) {
-          alert("먼저 베팅할 경기와 금액을 선택해주세요.");
+          showToast("경기와 금액을 선택해주세요."); // alert -> showToast
           return;
         }
 
+        const totalOdds = selected.bets.reduce((a, b) => a * b.odds, 1);
+        
+        // 간결한 메시지로 변경
+        const message = `${selected.bets.length}개 경기 선택! (총 배당: ${totalOdds.toFixed(2)}) 베팅 완료!`;
+        
+        // 새로운 토스트 알림 함수 호출
+        showToast(message);
+      });
         // 2. 베팅 내역을 요약해서 보여줄 메시지 만들기
         const totalOdds = selected.bets.reduce((a, b) => a * b.odds, 1);
         let betDetails = "";
@@ -259,3 +266,23 @@ setInterval(() => {
 renderList();
 normalizePills();
 updateSummary();
+
+  // ... setInterval 함수 끝 ...
+      }, 1000);
+
+      // --- 7. 초기 실행 ---
+      renderList();
+      updateSummary();
+
+      // ▼▼▼ 여기에 showToast 함수 추가 ▼▼▼
+      function showToast(message) {
+        const toastContainer = document.getElementById('toast-container');
+        if (!toastContainer) return; // 혹시 모를 에러 방지
+        
+        toastContainer.textContent = message;
+        toastContainer.classList.add('show');
+        
+        setTimeout(() => {
+          toastContainer.classList.remove('show');
+        }, 2500); // 2.5초 뒤에 사라짐
+      }
