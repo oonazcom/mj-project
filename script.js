@@ -46,7 +46,10 @@ const betBtn = document.getElementById("betBtn");
 const dinoAEl = document.getElementById("charA"); // id를 dinoA -> charA 로 변경
 const dinoBEl = document.getElementById("charB"); // id를 dinoB -> charB 로 변경
 
-let selected = { matchId: null, pick: null, odds: null, amount: null };
+let selected = {
+  bets: [],      // 선택한 베팅들을 담을 장바구니 (배열)
+  amount: null   // 베팅 금액은 하나만 유지
+};
 
 // --- 3. 핵심 기능 함수들 ---
 
@@ -117,93 +120,110 @@ function normalizePills() {
 }
 
 // 하단 요약 텍스트를 업데이트하는 함수
-function updateSummary() {
-  betBtn.disabled = true;
-  if (!selected.matchId) {
-    summaryEl.textContent = "경기/배당 선택 먼저 해줘";
-    return;
-  }
-  const m = matches.find(x => x.id === selected.matchId);
-  if (m && m.state !== State.OPEN) {
-    summaryEl.textContent = "이 경기는 베팅 마감됨";
-    return;
-  }
-  if (!selected.amount) {
-    summaryEl.textContent = `경기 ${selected.matchId} / 선택: ${selected.pick} / 배당 ${selected.odds.toFixed(2)} → 금액 선택`;
-    return;
-  }
-  summaryEl.textContent = `경기 ${selected.matchId} / 선택: ${selected.pick} / 배당 ${selected.odds.toFixed(2)} / 금액 ₩${selected.amount.toLocaleString()}`;
-  betBtn.disabled = false;
-}
+// script.js
+
+      function updateSummary() {
+        betBtn.disabled = true;
+
+        // 1. 장바구니에 담긴 베팅이 없으면 초기 메시지 표시
+        if (selected.bets.length === 0) {
+          summaryEl.textContent = "경기/배당 선택 먼저 해줘";
+          selected.amount = null; // 금액 선택도 초기화
+          document.querySelectorAll(".abtn").forEach(b => b.classList.remove("active"));
+          return;
+        }
+
+        // 2. 장바구니에 담긴 모든 배당률을 곱한다.
+        // a: 누적값, b: 현재 베팅정보, 1: 초기값
+        const totalOdds = selected.bets.reduce((a, b) => a * b.odds, 1);
+        
+        const summaryText = `${selected.bets.length}개 경기 선택 / 총 배당: ${totalOdds.toFixed(2)}`;
+
+        // 3. 베팅 금액이 선택되었는지에 따라 다른 메시지 표시
+        if (!selected.amount) {
+          summaryEl.textContent = `${summaryText} → 금액 선택`;
+        } else {
+          summaryEl.textContent = `${summaryText} / 금액 ₩${selected.amount.toLocaleString()}`;
+          betBtn.disabled = false;
+        }
+      }
 
 // --- 4. 이벤트 리스너 (사용자 행동 감지) ---
 
 // 베팅할 경기를 선택했을 때
+// ▼▼▼ 이 코드로 덮어쓰기 ▼▼▼
+
+// 베팅할 경기를 선택했을 때 (다폴더-장바구니 방식)
 listEl.addEventListener("click", (e) => {
   const betBox = e.target.closest(".bet-box");
   if (!betBox) return;
   const pill = betBox.querySelector(".pill");
   if (!pill || pill.classList.contains("disabled")) return;
-  const matchRow = betBox.closest(".match");
-  matchRow.querySelectorAll(".bet-box").forEach((box) => { box.classList.remove("active"); });
-  betBox.classList.add("active");
-  selected.matchId = pill.dataset.id;
-  selected.pick = pill.dataset.pick;
-  selected.odds = parseFloat(pill.dataset.odds);
+  
+  const matchId = pill.dataset.id;
+  const pick = pill.dataset.pick;
+  const odds = parseFloat(pill.dataset.odds);
+
+  // 1. 장바구니(selected.bets)에 이미 같은 경기가 담겨 있는지 확인
+  const existingBetIndex = selected.bets.findIndex(bet => bet.matchId === matchId);
+
+  if (existingBetIndex > -1) {
+    // 2. 이미 담겨있다면? 장바구니에서 해당 경기를 제거한다.
+    selected.bets.splice(existingBetIndex, 1);
+    betBox.classList.remove("active");
+  } else {
+    // 3. 새로 선택한 경기라면? 장바구니에 추가한다.
+    selected.bets.push({ matchId, pick, odds });
+    betBox.classList.add("active");
+  }
+  
   updateSummary();
 });
 
-// 베팅할 금액을 선택했을 때
-document.getElementById("amountButtons").addEventListener("click", e => {
-  const btn = e.target.closest(".abtn");
-  if (!btn) return;
-  document.querySelectorAll(".abtn").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-  selected.amount = parseInt(btn.dataset.amt, 10);
-  updateSummary();
-});
+// ▼▼▼ 바로 이 코드를 추가! ▼▼▼
+      // 베팅할 금액을 선택했을 때
+      document.getElementById("amountButtons").addEventListener("click", e => {
+        const btn = e.target.closest(".abtn");
+        if (!btn) return;
+        
+        // 일단 모든 금액 버튼의 활성 상태를 끄고
+        document.querySelectorAll(".abtn").forEach(b => b.classList.remove("active"));
+        
+        // 클릭한 버튼만 활성화
+        btn.classList.add("active");
 
-// '베팅하기' 버튼을 눌렀을 때 (지금은 서버 연동 없이 가짜로)
-betBtn.addEventListener("click", () => {
-  if (!selected.matchId || !selected.pick || !selected.amount) {
-    alert("경기, 배당, 금액을 모두 선택해줘");
-    return;
-  }
-  const m = matches.find(x => x.id === selected.matchId);
-  if (!m || m.state !== State.OPEN) {
-    alert("이 경기는 베팅이 마감되었어");
-    return;
-  }
-  alert(`${selected.matchId} 경기에 ${selected.amount}원 베팅 완료! (가짜)`);
-});
-
+        // 선택한 금액을 selected.amount에 저장
+        selected.amount = parseInt(btn.dataset.amt, 10);
+        
+        // 요약 정보 업데이트
+        updateSummary();
+      });
+      // ▲▲▲ 여기까지 추가 ▲▲▲
+  
 // --- 5. 시각 효과 (화면을 살아있게 만듦) ---
 
 let hpA = 100, hpB = 100, rnd = 1;
 setInterval(() => {
-  // HP, 라운드 등 시각적 효과 (서버 데이터와 무관)
-  hpA = Math.max(5, hpA - Math.floor(Math.random() * 3));
-  hpB = Math.max(5, hpB - Math.floor(Math.random() * 3));
-  document.getElementById('hpA').style.width = hpA + '%';
-  document.getElementById('hpB').style.width = hpB + '%';
-  if (Math.random() < 0.1) {
-    document.getElementById('round').textContent = ++rnd;
-  }
+        // HP, 라운드 시각 효과는 유지
+        hpA = Math.max(5, hpA - Math.floor(Math.random() * 3));
+        hpB = Math.max(5, hpB - Math.floor(Math.random() * 3));
+        document.getElementById('hpA').style.width = hpA + '%';
+        document.getElementById('hpB').style.width = hpB + '%';
+        if (Math.random() < 0.1) { document.getElementById('round').textContent = ++rnd; }
 
-  // 남은 시간 표시 업데이트
-  const t = Date.now();
-  matches.forEach(m => {
-    const el = document.getElementById(`remain-${m.id}`);
-    if (!el) return;
-    if (m.state === State.OPEN) {
-      const secs = Math.max(0, Math.ceil((m.closeAt - t) / 1000));
-      el.textContent = formatMMSS(secs);
-    } else {
-      el.textContent = "";
-    }
-  });
-}, 1000);
-
+        // 남은 시간 표시 업데이트
+        const t = Date.now();
+        matches.forEach(m => {
+          const el = document.getElementById("remain-".concat(m.id));
+          if (!el) return;
+          if (m.state === "OPEN") {
+            const secs = Math.max(0, Math.ceil((m.closeAt - t) / 1000));
+            el.textContent = formatMMSS(secs);
+          } else {
+            el.textContent = "";
+          }
+        });
+      }, 1000);
 
 // --- 6. 초기 실행 ---
 renderList();

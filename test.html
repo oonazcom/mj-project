@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>캐릭터 표시 테스트</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #2d3436;
+            margin: 0;
+            gap: 290px; /* 캐릭터 사이의 간격 */
+        }
+
+        .character {
+            width: 32px;
+            height: 32px;
+            background-image: url('smp_sp.png');
+            background-size: 1024px 832px;
+            image-rendering: pixelated;
+            transform: scale(4);
+            transform-origin: bottom; /* 확대 기준점을 발밑으로 */
+            
+            /* ▼▼▼ 1. 애니메이션 적용하기 ▼▼▼ */
+            animation: idle 1s steps(2) infinite;
+        }
+        
+        .character.left {
+            transform: scale(-4, 4);
+        }
+
+        /* ▼▼▼ 2. 애니메이션 동작 정의하기 ▼▼▼ */
+        @keyframes idle {
+            from { background-position-x: 0px; }
+            to { background-position-x: -64px; } /* 32px * 2프레임 */
+        }
+    </style>
+</head>
+<body>
+    <div class="character"></div>
+    <div class="character left"></div>
+</body>
+</html>
