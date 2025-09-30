@@ -208,26 +208,11 @@ betBtn.addEventListener("click", () => {
     return;
   }
 
-  // 2. 베팅 내역을 요약해서 보여줄 메시지 만들기
-  const totalOdds = selected.bets.reduce((a, b) => a * b.odds, 1);
-  let betDetails = "";
-  selected.bets.forEach(bet => {
-    betDetails += `\n- 경기 ${bet.matchId}: ${bet.pick}팀 선택 (배당 ${bet.odds})`;
-  });
-
-  const confirmationMessage = `
-    [베팅 확인]
-    ${betDetails}
-
-    총 배당: ${totalOdds.toFixed(2)}
-    베팅 금액: ₩${selected.amount.toLocaleString()}
-    
-    베팅하시겠습니까?
-  `;
-
-  // 3. 팝업 메시지 보여주기
-  alert(confirmationMessage);
-});
+  // 2. 간단한 성공 메시지를 alert로 보여주기
+        alert("베팅이 완료되었습니다!");
+        
+        // 여기에 나중에 실제 서버로 베팅 정보를 보내는 코드가 들어갈 거야.
+      });
   
 // --- 5. 시각 효과 (화면을 살아있게 만듦) ---
 
