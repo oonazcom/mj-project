@@ -154,31 +154,42 @@ function normalizePills() {
 // ▼▼▼ 이 코드로 덮어쓰기 ▼▼▼
 
 // 베팅할 경기를 선택했을 때 (다폴더-장바구니 방식)
-listEl.addEventListener("click", (e) => {
-  const betBox = e.target.closest(".bet-box");
-  if (!betBox) return;
-  const pill = betBox.querySelector(".pill");
-  if (!pill || pill.classList.contains("disabled")) return;
-  
-  const matchId = pill.dataset.id;
-  const pick = pill.dataset.pick;
-  const odds = parseFloat(pill.dataset.odds);
+// script.js
 
-  // 1. 장바구니(selected.bets)에 이미 같은 경기가 담겨 있는지 확인
-  const existingBetIndex = selected.bets.findIndex(bet => bet.matchId === matchId);
+      listEl.addEventListener("click", (e) => {
+        const betBox = e.target.closest(".bet-box");
+        if (!betBox) return;
 
-  if (existingBetIndex > -1) {
-    // 2. 이미 담겨있다면? 장바구니에서 해당 경기를 제거한다.
-    selected.bets.splice(existingBetIndex, 1);
-    betBox.classList.remove("active");
-  } else {
-    // 3. 새로 선택한 경기라면? 장바구니에 추가한다.
-    selected.bets.push({ matchId, pick, odds });
-    betBox.classList.add("active");
-  }
-  
-  updateSummary();
-});
+        const pill = betBox.querySelector(".pill");
+        if (!pill || pill.classList.contains("disabled")) return;
+        
+        const matchId = pill.dataset.id;
+        const matchRow = betBox.closest(".match");
+
+        // 1. 방금 클릭한 박스가 이미 선택된 상태였는지 기억해둠 (선택 취소용)
+        const isDeselect = betBox.classList.contains("active");
+
+        // 2. 일단 이 경기에 대한 모든 시각적 선택 효과를 제거
+        matchRow.querySelectorAll(".bet-box").forEach(box => box.classList.remove("active"));
+        
+        // 3. 장바구니에서도 이 경기에 대한 모든 베팅 정보를 제거
+        const existingBetIndex = selected.bets.findIndex(bet => bet.matchId === matchId);
+        if (existingBetIndex > -1) {
+          selected.bets.splice(existingBetIndex, 1);
+        }
+
+        // 4. 만약 방금 클릭이 '선택 취소'가 아니었다면 (새로운 선택 또는 다른 팀으로 변경)
+        if (!isDeselect) {
+          // 클릭한 박스에만 시각적 효과를 다시 적용하고
+          betBox.classList.add("active");
+          // 장바구니에 새로운 베팅 정보를 추가한다
+          const pick = pill.dataset.pick;
+          const odds = parseFloat(pill.dataset.odds);
+          selected.bets.push({ matchId, pick, odds });
+        }
+        
+        updateSummary();
+      });
 
 // ▼▼▼ 바로 이 코드를 추가! ▼▼▼
       // 베팅할 금액을 선택했을 때
