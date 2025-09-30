@@ -26,9 +26,9 @@ const FIRST_OPEN_WINDOW_MS = 60000;
 const SETTLE_DELAY_MS = 10000;
 
 function makeMatch(id, a, b, oddsA, oddsB, index) {
-  const closeAt = now + FIRST_OPEN_WINDOW_MS + index * OPEN_GAP_MS;
-  const settleAt = closeAt + SETTLE_DELAY_MS;
-  return { id, a, b, oddsA, oddsB, state: State.OPEN, openedAt: now, closeAt, settleAt, winner: null };
+  // 3분 간격으로 경기 시작 시간을 설정
+  const startTime = new Date(now + 60000 + index * 180000); // 1분 뒤 첫 경기, 이후 3분 간격
+  return { id, a, b, oddsA, oddsB, state: State.OPEN, startTime };
 }
 
 const matches = [
@@ -85,28 +85,22 @@ function renderList() {
   matches.forEach(m => {
     const row = document.createElement("div");
     row.className = "match";
-    row.dataset.id = m.id;
     const disable = m.state !== State.OPEN;
+
+    // startTime에서 시간:분 형식으로 바꿈
+    const hours = String(m.startTime.getHours()).padStart(2, '0');
+    const minutes = String(m.startTime.getMinutes()).padStart(2, '0');
+    const displayTime = `${hours}:${minutes}`;
+
     row.innerHTML = `
       <div class="header">
-        <div class="leftRow"><div class="badge ${m.state}">${statusKo(m)}</div><div class="muted">ID: ${m.id}</div>${resultLabel(m)}</div>
-        <div class="rightRow">${remainSpan(m)}</div>
+        <div class="leftRow"><div class="badge ${m.state}">${statusKo(m)}</div><div class="muted">ID: ${m.id}</div></div>
+        <div class="rightRow"><span class="remain">${displayTime}</span></div>
       </div>
       <div class="bet-container">
-        <div class="bet-box" role="button"><span class="tname">${m.a}</span><div class="pill ${disable ? "disabled" : ""}" data-id="${m.id}" data-pick="A" data-odds="${m.oddsA}">${m.oddsA}</div></div>
-        <div class="bet-box" role="button"><span class="tname">${m.b}</span><div class="pill ${disable ? "disabled" : ""}" data-id="${m.id}" data-pick="B" data-odds="${m.oddsB}">${m.oddsB}</div></div>
+        <div class="bet-box" role="button"><span class="tname">${m.a}</span><div class="pill ${disable ? "disabled" : ""}" data-id="${m.id}" data-pick="A" data-odds="${m.oddsA}">${m.oddsA.toFixed(2)}</div></div>
+        <div class="bet-box" role="button"><span class="tname">${m.b}</span><div class="pill ${disable ? "disabled" : ""}" data-id="${m.id}" data-pick="B" data-odds="${m.oddsB}">${m.oddsB.toFixed(2)}</div></div>
       </div>`;
-    
-    if (m.state === State.SETTLED) {
-      const pills = row.querySelectorAll(".pill");
-      if (m.winner === "A") {
-        pills[0].classList.add("active");
-        pills[1].classList.add("disabled");
-      } else {
-        pills[1].classList.add("active");
-        pills[0].classList.add("disabled");
-      }
-    }
     listEl.appendChild(row);
   });
 }
@@ -229,26 +223,9 @@ betBtn.addEventListener("click", () => {
 
 let hpA = 100, hpB = 100, rnd = 1;
 setInterval(() => {
-        // HP, 라운드 시각 효과는 유지
-        hpA = Math.max(5, hpA - Math.floor(Math.random() * 3));
-        hpB = Math.max(5, hpB - Math.floor(Math.random() * 3));
-        document.getElementById('hpA').style.width = hpA + '%';
-        document.getElementById('hpB').style.width = hpB + '%';
-        if (Math.random() < 0.1) { document.getElementById('round').textContent = ++rnd; }
-
-        // 남은 시간 표시 업데이트
-        const t = Date.now();
-        matches.forEach(m => {
-          const el = document.getElementById("remain-".concat(m.id));
-          if (!el) return;
-          if (m.state === "OPEN") {
-            const secs = Math.max(0, Math.ceil((m.closeAt - t) / 1000));
-            el.textContent = formatMMSS(secs);
-          } else {
-            el.textContent = "";
-          }
-        });
-      }, 1000);
+  // 1초마다 시간을 업데이트하던 로직을 제거.
+  // 나중에 여기에 경기 상태를 자동으로 바꾸는 등의 서버 연동 코드가 들어갈 수 있어.
+}, 1000);
 
 // --- 6. 초기 실행 ---
 renderList();
