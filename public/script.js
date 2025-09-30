@@ -201,20 +201,13 @@ listEl.addEventListener("click", (e) => {
       // ▲▲▲ 여기까지 추가 ▲▲▲
         // ▼▼▼ 바로 여기에 이 코드를 추가! ▼▼▼
       // '베팅하기' 버튼을 눌렀을 때
-         betBtn.addEventListener("click", () => {
+      betBtn.addEventListener("click", () => {
+        // 1. 베팅할 경기가 없거나, 금액이 선택되지 않았으면 막기
         if (selected.bets.length === 0 || !selected.amount) {
-          showToast("경기와 금액을 선택해주세요."); // alert -> showToast
+          alert("먼저 베팅할 경기와 금액을 선택해주세요.");
           return;
         }
 
-        const totalOdds = selected.bets.reduce((a, b) => a * b.odds, 1);
-        
-        // 간결한 메시지로 변경
-        const message = `${selected.bets.length}개 경기 선택! (총 배당: ${totalOdds.toFixed(2)}) 베팅 완료!`;
-        
-        // 새로운 토스트 알림 함수 호출
-        showToast(message);
-      });
         // 2. 베팅 내역을 요약해서 보여줄 메시지 만들기
         const totalOdds = selected.bets.reduce((a, b) => a * b.odds, 1);
         let betDetails = "";
