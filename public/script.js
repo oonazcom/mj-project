@@ -199,6 +199,35 @@ listEl.addEventListener("click", (e) => {
         updateSummary();
       });
       // ▲▲▲ 여기까지 추가 ▲▲▲
+
+      // '베팅하기' 버튼 기능
+betBtn.addEventListener("click", () => {
+  // 1. 베팅할 경기가 없거나, 금액이 선택되지 않았으면 막기
+  if (selected.bets.length === 0 || !selected.amount) {
+    alert("먼저 베팅할 경기와 금액을 선택해주세요.");
+    return;
+  }
+
+  // 2. 베팅 내역을 요약해서 보여줄 메시지 만들기
+  const totalOdds = selected.bets.reduce((a, b) => a * b.odds, 1);
+  let betDetails = "";
+  selected.bets.forEach(bet => {
+    betDetails += `\n- 경기 ${bet.matchId}: ${bet.pick}팀 선택 (배당 ${bet.odds})`;
+  });
+
+  const confirmationMessage = `
+    [베팅 확인]
+    ${betDetails}
+
+    총 배당: ${totalOdds.toFixed(2)}
+    베팅 금액: ₩${selected.amount.toLocaleString()}
+    
+    베팅하시겠습니까?
+  `;
+
+  // 3. 팝업 메시지 보여주기
+  alert(confirmationMessage);
+});
   
 // --- 5. 시각 효과 (화면을 살아있게 만듦) ---
 
