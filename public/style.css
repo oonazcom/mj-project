@@ -157,30 +157,3 @@ body {
 .result { font-size: 10px; margin-left: 6px; }
 .remain { font-size: 10px; color: var(--muted); min-width: 32px; text-align: right; }
 .tname:lang(ko), .pill:lang(ko) { font-family: "Galmuri11", sans-serif; font-weight: 700; }
-
-/* style.css 파일 맨 아래에 추가 */
-
-/* === 토스트 알림 스타일 === */
-.toast-container {
-  position: fixed; /* 화면에 고정 */
-  left: 50%;
-  bottom: 20px;
-  transform: translateX(-50%);
-  background-color: #2d3436; /* 어두운 배경색 */
-  color: #fff;
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-family: 'Galmuri11', sans-serif;
-  font-size: 14px;
-  z-index: 1000;
-  
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.5s, visibility 0.5s;
-}
-
-/* 'show' 클래스가 추가되면 나타남 */
-.toast-container.show {
-  opacity: 1;
-  visibility: visible;
-}

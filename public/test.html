@@ -1,81 +1,45 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>토스트 알림 테스트</title>
-  <style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background-color: #dfe6e9;
-      font-family: 'Press Start 2P', 'Galmuri11', sans-serif;
-    }
+    <meta charset="UTF-8">
+    <title>캐릭터 표시 테스트</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #2d3436;
+            margin: 0;
+            gap: 290px; /* 캐릭터 사이의 간격 */
+        }
 
-    button {
-      font-family: inherit; /* body의 폰트를 따라가도록 설정 */
-      font-size: 20px;
-      padding: 15px 30px;
-      cursor: pointer;
-    }
+        .character {
+            width: 32px;
+            height: 32px;
+            background-image: url('smp_sp.png');
+            background-size: 1024px 832px;
+            image-rendering: pixelated;
+            transform: scale(4);
+            transform-origin: bottom; /* 확대 기준점을 발밑으로 */
+            
+            /* ▼▼▼ 1. 애니메이션 적용하기 ▼▼▼ */
+            animation: idle 1s steps(2) infinite;
+        }
+        
+        .character.left {
+            transform: scale(-4, 4);
+        }
 
-    /* === 토스트 알림 스타일 === */
-    .toast-container {
-      position: fixed; /* 화면에 고정 */
-      left: 50%;
-      bottom: 20px;
-      transform: translateX(-50%);
-      background-color: #2d3436; /* 어두운 배경색 */
-      color: #fff;
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-size: 14px;
-      z-index: 1000;
-      
-      /* 평소에는 투명하고 안 보이게 */
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.5s, visibility 0.5s;
-    }
-
-    /* 'show' 클래스가 추가되면 나타남 */
-    .toast-container.show {
-      opacity: 1;
-      visibility: visible;
-    }
-  </style>
+        /* ▼▼▼ 2. 애니메이션 동작 정의하기 ▼▼▼ */
+        @keyframes idle {
+            from { background-position-x: 0px; }
+            to { background-position-x: -64px; } /* 32px * 2프레임 */
+        }
+    </style>
 </head>
 <body>
-
-  <button id="test-button">토스트 띄우기</button>
-
-  <div id="toast-container" class="toast-container">
-    테스트 메시지입니다!
-  </div>
-
-  <script>
-    const testButton = document.getElementById('test-button');
-    const toastContainer = document.getElementById('toast-container');
-
-    // 토스트를 보여주는 함수
-    function showToast(message) {
-      toastContainer.textContent = message;
-      
-      // 'show' 클래스를 추가해서 나타나게 함
-      toastContainer.classList.add('show');
-      
-      // 2.5초 뒤에 'show' 클래스를 제거해서 사라지게 함
-      setTimeout(() => {
-        toastContainer.classList.remove('show');
-      }, 2500);
-    }
-
-    // 버튼 클릭 이벤트
-    testButton.addEventListener('click', () => {
-      showToast('성공적으로 토스트 알림이 나타났습니다!');
-    });
-  </script>
-
+    <div class="character"></div>
+    <div class="character left"></div>
 </body>
 </html>
