@@ -146,10 +146,15 @@ body {
 .pill { background: var(--pill); padding: 3px 6px; border-radius: 6px; user-select: none; transition: opacity 0.2s; font-variant-numeric: tabular-nums; }
 .pill.disabled { opacity: 0.4; pointer-events: none; }
 .controls { display: flex; gap: 6px; padding: 0 6px; }
-.amounts { display: flex; gap: 6px; flex-wrap: wrap; }
+.amounts { 
+  display: flex; 
+  gap: 6px; 
+  flex-wrap: wrap;
+  flex-grow: 1; /* <-- 이 줄 추가 */
+}
 .abtn { background: #ffe082; border: 2px solid #ffca28; border-radius: 8px; padding: 8px 10px; font-size: 11px; cursor: pointer; }
 .abtn.active { outline: 2px solid #ff8f00; }
-.cta { margin-top: 4px; display: flex; gap: 6px; padding: 0 6px; }
+
 .btn { background: var(--btn); color: #fff; border: none; padding: 10px 12px; border-radius: 8px; font-size: 11px; cursor: pointer; box-shadow: 0 2px var(--btn-shadow); }
 .btn:active { transform: translateY(2px); box-shadow: none; }
 .btn[disabled] { opacity: 0.55; filter: grayscale(0.1); cursor: not-allowed; box-shadow: none; }
