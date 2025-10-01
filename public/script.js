@@ -41,7 +41,6 @@ const matches = [
 
 // --- 2. HTML 화면 요소들과 연결 ---
 const listEl = document.getElementById("matchList");
-const summaryEl = document.getElementById("summary");
 const betBtn = document.getElementById("betBtn");
 const dinoAEl = document.getElementById("charA"); // id를 dinoA -> charA 로 변경
 const dinoBEl = document.getElementById("charB"); // id를 dinoB -> charB 로 변경
