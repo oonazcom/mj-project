@@ -34,7 +34,7 @@ body {
 
 /* --- 화면 레이아웃 --- */
 .screen {
-  height: 300px;
+  height: 210px;
   flex-shrink: 0;
   background: var(--bezel);
   border-radius: 12px;
