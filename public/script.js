@@ -116,30 +116,20 @@ function normalizePills() {
 // script.js
 
       function updateSummary() {
-        betBtn.disabled = true;
-
-        // 1. 장바구니에 담긴 베팅이 없으면 초기 메시지 표시
-        if (selected.bets.length === 0) {
-          summaryEl.textContent = "경기/배당 선택 먼저 해줘";
-          selected.amount = null; // 금액 선택도 초기화
-          document.querySelectorAll(".abtn").forEach(b => b.classList.remove("active"));
-          return;
-        }
-
-        // 2. 장바구니에 담긴 모든 배당률을 곱한다.
-        // a: 누적값, b: 현재 베팅정보, 1: 초기값
-        const totalOdds = selected.bets.reduce((a, b) => a * b.odds, 1);
-        
-        const summaryText = `${selected.bets.length}개 경기 선택 / 총 배당: ${totalOdds.toFixed(2)}`;
-
-        // 3. 베팅 금액이 선택되었는지에 따라 다른 메시지 표시
-        if (!selected.amount) {
-          summaryEl.textContent = `${summaryText} → 금액 선택`;
-        } else {
-          summaryEl.textContent = `${summaryText} / 금액 ₩${selected.amount.toLocaleString()}`;
-          betBtn.disabled = false;
-        }
-      }
+  betBtn.disabled = true;
+  if (selected.bets.length === 0) {
+    selected.amount = null;
+    document.querySelectorAll(".abtn").forEach(b => b.classList.remove("active"));
+    return;
+  }
+  
+  if (!selected.amount) {
+    // 금액이 선택되지 않았으면 '베팅하기'는 비활성 상태 유지
+  } else {
+    // 경기와 금액이 모두 선택되었을 때만 '베팅하기' 버튼 활성화
+    betBtn.disabled = false;
+  }
+}
 
 // --- 4. 이벤트 리스너 (사용자 행동 감지) ---
 
