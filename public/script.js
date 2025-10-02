@@ -104,6 +104,39 @@ function renderList() {
   });
 }
 
+function battleTick() {
+  if (hpA <= 0 || hpB <= 0) return; // 이미 끝났으면 중단
+
+  const attacker = Math.random() < 0.5 ? "A" : "B";
+  if (attacker === "A") {
+    dinoAEl.classList.add("attack");
+    hpB = Math.max(0, hpB - Math.floor(Math.random() * 15 + 5));
+  } else {
+    dinoBEl.classList.add("attack");
+    hpA = Math.max(0, hpA - Math.floor(Math.random() * 15 + 5));
+  }
+
+  updateHP();
+
+  // 애니메이션 끝난 후 클래스 제거
+  setTimeout(() => {
+    dinoAEl.classList.remove("attack");
+    dinoBEl.classList.remove("attack");
+  }, 500);
+
+  // 승자 판정
+  if (hpA <= 0 || hpB <= 0) {
+    alert(hpA <= 0 ? "B가 승리!" : "A가 승리!");
+  }
+}
+setInterval(battleTick, 3000);
+
+function updateHP() {
+  document.getElementById("hpA").style.width = hpA + "%";
+  document.getElementById("hpB").style.width = hpB + "%";
+}
+
+
 // 배당률 숫자를 소수점 둘째 자리까지 보여주게 정규화하는 함수
 function normalizePills() {
   document.querySelectorAll(".pill").forEach(el => {
