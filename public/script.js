@@ -128,16 +128,31 @@ function showDamage(targetEl, dmg) {
   const dmgEl = document.createElement("div");
   dmgEl.className = "damage-text";
   dmgEl.textContent = `-${dmg}`;
+
+   // 크리티컬 판정 (예: 25 이상이면 크리티컬)
+  if (dmg >= 25) {
+    dmgEl.style.color = "#ffeb3b"; // 노란색
+    dmgEl.style.fontSize = "16px";
+    dmgEl.style.textShadow = "2px 2px 4px #000";
+  } else {
+    dmgEl.style.color = "#ff4444"; // 빨강
+    dmgEl.style.fontSize = "12px";
+  }
+
   dmgEl.style.left = "50%";
   dmgEl.style.transform = "translateX(-50%)";
-  dmgEl.style.top = "-20px";
+  dmgEl.style.top = "-5px";
+
   targetEl.appendChild(dmgEl);
+  
   setTimeout(() => dmgEl.remove(), 1000);
 }
 
 function battleTick() {
-  if (hpA <= 0 || hpB <= 0) return;
-
+   if (hpA <= 0 || hpB <= 0) {
+    clearInterval(battleInterval); // 루프 완전히 정지
+    return;
+  }
   const attacker = Math.random() < 0.5 ? "A" : "B";
   const arenaEl = document.querySelector(".arena");
 
@@ -210,4 +225,4 @@ renderList();
 normalizePills();
 updateSummary();
 updateHP();
-setInterval(battleTick, 3000);
+battleInterval = setInterval(battleTick, 3000);

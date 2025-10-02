@@ -88,10 +88,11 @@ body {
 .arena {
   flex: 1;
   display: flex;
-  align-items: center;
+  align-items: flex-end; /* 캐릭터를 arena 하단에 붙임 */
   justify-content: center;
   gap: 90px;
   position: relative;
+  padding-bottom: 20px; /* 살짝 위로 띄운 효과 */
 }
 
 .vs {
@@ -193,12 +194,12 @@ body {
 
 .damage-text {
   position: absolute;
-  color: #ff4444;
-  font-size: 12px;
+  color: #ff0000;
+  font-size: 8px;
   font-weight: bold;
   animation: floatUp 1s ease-out forwards;
   pointer-events: none;
-  text-shadow: 1px 1px 2px #000;
+  text-shadow: 1px 1px 2px #000000;
 }
 
 @keyframes floatUp {
