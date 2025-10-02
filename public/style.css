@@ -102,6 +102,7 @@ body {
 
 /* === 캐릭터 스타일 (쩐이 수정한 최종본) === */
 .character {
+  position: relative; /* damage-text 기준점 */
   width: 32px;
   height: 32px;
   transform-origin: bottom;
@@ -165,7 +166,7 @@ body {
 
 @keyframes attack-left {
   0% { transform: scale(-3,3) translateX(0); }
-  50% { transform: scale(-3,3) translateX(-20px); }
+  50% { transform: scale(-3,3) translateX(20px); }
   100% { transform: scale(-3,3) translateX(0); }
 }
 
@@ -177,3 +178,30 @@ body {
 
 .character.left.attack { animation: attack-left 0.5s ease; }
 .character.right.attack { animation: attack-right 0.5s ease; }
+
+@keyframes shake {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-4px, 2px); }
+  50% { transform: translate(4px, -2px); }
+  75% { transform: translate(-3px, 3px); }
+  100% { transform: translate(0, 0); }
+}
+
+.arena.shake {
+  animation: shake 0.4s;
+}
+
+.damage-text {
+  position: absolute;
+  color: #ff4444;
+  font-size: 12px;
+  font-weight: bold;
+  animation: floatUp 1s ease-out forwards;
+  pointer-events: none;
+  text-shadow: 1px 1px 2px #000;
+}
+
+@keyframes floatUp {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-30px); }
+}
